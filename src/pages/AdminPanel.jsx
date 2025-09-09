@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Plus, Edit2, Trash2, Upload, X } from 'lucide-react';
-import { useProducts, Product } from '../contexts/ProductContext';
+import { useProducts } from '../contexts/ProductContext';
 
 export default function AdminPanel() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -16,26 +16,33 @@ export default function AdminPanel() {
 
   const categories = ['Suits', 'Blazers', 'Shirts', 'Trousers', 'Shoes', 'Accessories'];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Async submit for add/update
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingProduct) {
-      updateProduct(editingProduct.id, {
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        category: formData.category,
-        image: formData.image
-      });
-    } else {
-      addProduct({
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        category: formData.category,
-        image: formData.image
-      });
+    const priceValue = parseFloat(formData.price);
+
+    try {
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, {
+          name: formData.name,
+          description: formData.description,
+          price: priceValue,
+          category: formData.category,
+          image: formData.image
+        });
+      } else {
+        await addProduct({
+          name: formData.name,
+          description: formData.description,
+          price: priceValue,
+          category: formData.category,
+          image: formData.image
+        });
+      }
+      handleCloseModal();
+    } catch (err) {
+      console.error("❌ Error submitting product:", err);
     }
-    handleCloseModal();
   };
 
   const handleCloseModal = () => {
@@ -50,7 +57,7 @@ export default function AdminPanel() {
     });
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -62,12 +69,12 @@ export default function AdminPanel() {
     setIsModalOpen(true);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result as string;
+        const result = e.target?.result;
         setFormData({ ...formData, image: result });
       };
       reader.readAsDataURL(file);
@@ -77,6 +84,7 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Panel</h1>
           <button
@@ -102,6 +110,13 @@ export default function AdminPanel() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
+                {products.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                      No products found.
+                    </td>
+                  </tr>
+                )}
                 {products.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
@@ -159,10 +174,9 @@ export default function AdminPanel() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Name
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
                   <input
                     type="text"
                     required
@@ -173,10 +187,9 @@ export default function AdminPanel() {
                   />
                 </div>
 
+                {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                   <textarea
                     required
                     rows={4}
@@ -187,11 +200,10 @@ export default function AdminPanel() {
                   />
                 </div>
 
+                {/* Price & Category */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price (₹)
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price (₹)</label>
                     <input
                       type="number"
                       required
@@ -203,11 +215,8 @@ export default function AdminPanel() {
                       placeholder="Enter price"
                     />
                   </div>
-
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                     <select
                       required
                       value={formData.category}
@@ -222,10 +231,9 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
+                {/* Image Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Product Image
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
                   <div className="space-y-4">
                     <div className="flex items-center space-x-4">
                       <input
@@ -263,6 +271,7 @@ export default function AdminPanel() {
                   </div>
                 </div>
 
+                {/* Buttons */}
                 <div className="flex space-x-4 pt-6">
                   <button
                     type="submit"

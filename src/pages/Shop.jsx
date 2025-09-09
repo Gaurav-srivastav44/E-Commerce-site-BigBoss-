@@ -11,10 +11,11 @@ export default function Shop() {
   const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === '' || selectedCategory === 'All' || 
-                           product.category === selectedCategory;
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === '' || selectedCategory === 'All' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -49,7 +50,7 @@ export default function Shop() {
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category} value={category === 'All' ? '' : category}>
                     {category}
                   </option>
@@ -87,7 +88,9 @@ export default function Shop() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{product.name}</h3>
                   <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-yellow-600">₹{product.price.toLocaleString()}</span>
+                    <span className="text-2xl font-bold text-yellow-600">
+                      ₹{product.price.toLocaleString()}
+                    </span>
                     <Link
                       to={`/product/${product.id}`}
                       className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"

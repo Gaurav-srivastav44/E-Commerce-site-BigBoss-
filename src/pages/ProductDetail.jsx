@@ -4,7 +4,7 @@ import { ArrowLeft, Calendar, Tag } from 'lucide-react';
 import { useProducts } from '../contexts/ProductContext';
 
 export default function ProductDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const { getProduct } = useProducts();
   const product = id ? getProduct(id) : undefined;
 
@@ -72,7 +72,7 @@ export default function ProductDetail() {
                   </div>
                   <div className="flex items-center">
                     <Calendar className="mr-2 h-4 w-4" />
-                    <span>Added: {product.createdAt.toLocaleDateString()}</span>
+                    <span>Added: {new Date(product.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
