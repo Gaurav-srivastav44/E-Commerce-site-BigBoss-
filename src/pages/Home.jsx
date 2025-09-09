@@ -11,10 +11,10 @@ import { motion } from "framer-motion";
 import instaLogo from "./instagram.png";
 import whatsappLogo from "./whatsapp.png";
 
-import shirt1 from "../images/1.jpg";
-import shirt2 from "../images/2.jpg";
-import pant1 from "../images/a.jpg";
-import pant2 from "../images/b.jpg";
+import shirt1 from "../Images/1.jpg";
+import shirt2 from "../Images/2.jpg";
+import pant1 from "../Images/a.jpg";
+import pant2 from "../Images/b.jpg";
 
 export default function Home() {
   const { products } = useProducts();
