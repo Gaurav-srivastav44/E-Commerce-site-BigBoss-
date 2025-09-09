@@ -15,7 +15,7 @@ export const ProductProvider = ({ children }) => {
       price: 550,
       description: "Premium shirt from local collection.",
       createdAt: new Date().toISOString(),
-      image: new URL(`../images/${i + 1}.jpg`, import.meta.url).href,
+      image: new URL(`../Images/${i + 1}.jpg`, import.meta.url).href,
     }));
 
     // Pants a–h
@@ -27,7 +27,7 @@ export const ProductProvider = ({ children }) => {
       price: 750,
       description: "Comfortable pant from local collection.",
       createdAt: new Date().toISOString(),
-      image: new URL(`../images/${letter}.jpg`, import.meta.url).href,
+      image: new URL(`../Images/${letter}.jpg`, import.meta.url).href,
     }));
 
     setProducts([...shirts, ...pants]);
